@@ -9,6 +9,8 @@ namespace Reactec.Domain
     using System.Text;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
+    using Reactec.Domain.DataStore;
+    using Reactec.Domain.DataStore.Models;
     using Reactec.Domain.Repository;
 
     /// <summary>
@@ -24,6 +26,8 @@ namespace Reactec.Domain
         public static void AddRepository(this IServiceCollection services, string connectionString)
         {
             services.AddDbContext<UserContext>(opts => opts.UseSqlServer(connectionString));
+            services.AddScoped<IDataRepository<User>, UserRepository>();
+            services.AddScoped<IDataRepository<LoginAudit>, AuditRepository>();
         }
     }
 }

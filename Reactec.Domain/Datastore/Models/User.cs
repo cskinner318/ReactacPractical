@@ -2,7 +2,7 @@
 // Copyright (c) Reactec Practical. All rights reserved.
 // </copyright>
 
-namespace Reactec.Domain.Repository.Models
+namespace Reactec.Domain.DataStore.Models
 {
     using System;
     using System.Collections.Generic;

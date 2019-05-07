@@ -2,13 +2,13 @@
 // Copyright (c) Reactec Practical. All rights reserved.
 // </copyright>
 
-namespace Reactec.Domain.Repository
+namespace Reactec.Domain.DataStore
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
     using Microsoft.EntityFrameworkCore;
-    using Reactec.Domain.Repository.Models;
+    using Reactec.Domain.DataStore.Models;
 
     /// <summary>
     /// Implementation of DbContext for user repository.
