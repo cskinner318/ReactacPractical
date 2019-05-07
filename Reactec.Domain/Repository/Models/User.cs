@@ -1,5 +1,5 @@
-﻿// <copyright file="User.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="User.cs" company="Reactec Practical">
+// Copyright (c) Reactec Practical. All rights reserved.
 // </copyright>
 
 namespace Reactec.Domain.Repository.Models
