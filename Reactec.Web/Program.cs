@@ -25,7 +25,7 @@ namespace Reactec.Web
         /// CreateWebHostBuilder for web.
         /// </summary>
         /// <param name="args">any args - should be empty.</param>
-        /// <returns>IWebHostBuilder</returns>
+        /// <returns>IWebHostBuilder.</returns>
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();

@@ -80,6 +80,8 @@ namespace Reactec.Web
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.ConfigureRepository();
         }
     }
 }

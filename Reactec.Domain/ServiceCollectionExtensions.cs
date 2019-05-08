@@ -7,6 +7,8 @@ namespace Reactec.Domain
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Reactec.Domain.DataStore;
@@ -28,6 +30,20 @@ namespace Reactec.Domain
             services.AddDbContext<UserContext>(opts => opts.UseSqlServer(connectionString));
             services.AddScoped<IDataRepository<User>, UserRepository>();
             services.AddScoped<IDataRepository<LoginAudit>, AuditRepository>();
+            services.AddScoped<IUserService, UserService>();
+        }
+
+        /// <summary>
+        /// Configures the repository services.
+        /// </summary>
+        /// <param name="app">Application builder.</param>
+        public static void ConfigureRepository(this IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<UserContext>();
+                context.Database.EnsureCreated();
+            }
         }
     }
 }

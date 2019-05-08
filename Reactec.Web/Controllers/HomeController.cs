@@ -9,18 +9,45 @@ namespace Reactec.Web.Controllers
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
+    using Reactec.Domain;
+    using Reactec.Web.Models;
 
     /// <summary>
-    /// Home controller
+    /// Home controller.
     /// </summary>
     public class HomeController : Controller
     {
+        private readonly IUserService userService;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HomeController"/> class.
+        /// </summary>
+        /// <param name="userService">The user service.</param>
+        public HomeController(IUserService userService)
+        {
+            this.userService = userService;
+        }
+
         /// <summary>
         /// Get Index.
         /// </summary>
         /// <returns>IActionResult.</returns>
+        [HttpGet]
         public IActionResult Index()
         {
+            return this.View();
+        }
+
+        /// <summary>
+        /// Post Index.
+        /// </summary>
+        /// <param name="webUser">The web user model.</param>
+        /// <returns>IActionResult.</returns>
+        [HttpPost]
+        public IActionResult Index(WebUser webUser)
+        {
+            this.userService.RegisterLogin(webUser.Name, webUser.EmailAddress, webUser.DateOfBirth);
+
             return this.View();
         }
     }
