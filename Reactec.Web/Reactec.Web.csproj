@@ -24,4 +24,8 @@
     <ProjectReference Include="..\Reactec.Domain\Reactec.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>
