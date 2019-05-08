@@ -48,7 +48,12 @@ namespace Reactec.Web.Controllers
         {
             this.userService.RegisterLogin(webUser.Name, webUser.EmailAddress, webUser.DateOfBirth);
 
-            return this.View();
+            if (!this.ModelState.IsValid)
+            { // re-render the view when validation failed.
+                return this.View("Index", webUser);
+            }
+
+            return this.RedirectToAction("AuditHistory");
         }
     }
 }

@@ -6,6 +6,7 @@ namespace Reactec.Web.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -27,6 +28,8 @@ namespace Reactec.Web.Models
         /// <summary>
         /// Gets or sets the users date of birth.
         /// </summary>
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyy}")]
         public DateTime DateOfBirth { get; set; }
     }
 }

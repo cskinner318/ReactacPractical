@@ -8,6 +8,8 @@ namespace Reactec.Web
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using FluentValidation;
+    using FluentValidation.AspNetCore;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -16,6 +18,8 @@ namespace Reactec.Web
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Reactec.Domain;
+    using Reactec.Web.Models;
+    using Reactec.Web.Validators;
 
     /// <summary>
     /// Startup for web project.
@@ -49,8 +53,15 @@ namespace Reactec.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddFluentValidation(fv =>
+                {
+                    fv.ImplicitlyValidateChildProperties = true;
+                });
+
             services.AddRepository(this.Configuration["ConnectionString:UserDb"]);
+            services.AddTransient<IValidator<WebUser>, WebUserValidator>();
         }
 
         /// <summary>
