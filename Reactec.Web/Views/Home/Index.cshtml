@@ -26,7 +26,7 @@
                 </th>
             </tr>
             <tr>
-                <td>Name: </td>
+                <td>Name: <span style="color: red">@Html.ValidationMessageFor(m => m.Name)</span></td>
                 <td>
                     @Html.TextBoxFor(m => m.Name)
                 </td>
