@@ -7,6 +7,7 @@ namespace Reactec.Domain
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using AutoMapper;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,7 @@ namespace Reactec.Domain
             services.AddScoped<IDataRepository<User>, UserRepository>();
             services.AddScoped<IDataRepository<LoginAudit>, AuditRepository>();
             services.AddScoped<IUserService, UserService>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         /// <summary>

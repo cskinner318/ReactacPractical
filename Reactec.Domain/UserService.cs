@@ -5,8 +5,11 @@
 namespace Reactec.Domain
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using AutoMapper;
     using Reactec.Domain.DataStore.Models;
+    using Reactec.Domain.QueryResults;
     using Reactec.Domain.Repository;
 
     /// <summary>
@@ -16,20 +19,33 @@ namespace Reactec.Domain
     {
         private readonly IDataRepository<User> userRepository;
         private readonly IDataRepository<LoginAudit> auditRepository;
+        private readonly IMapper mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserService"/> class.
         /// </summary>
         /// <param name="userRepository">Repository for user data.</param>
         /// <param name="auditRepository">Repository for login audit data.</param>
-        public UserService(IDataRepository<User> userRepository, IDataRepository<LoginAudit> auditRepository)
+        /// <param name="mapper">Automapper profile.</param>
+        public UserService(IDataRepository<User> userRepository, IDataRepository<LoginAudit> auditRepository, IMapper mapper)
         {
             this.userRepository = userRepository;
             this.auditRepository = auditRepository;
+            this.mapper = mapper;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public IEnumerable<LoginAuditQueryResult> AuditHistory(int userId)
+        {
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
-        public User RegisterLogin(string name, string email, DateTime dateOfBirth)
+        public UserQueryResult RegisterLogin(string name, string email, DateTime dateOfBirth)
         {
             // the 18 years should be in config really
             bool userOver18 = dateOfBirth <= DateTime.Now.AddYears(-18);
@@ -42,7 +58,8 @@ namespace Reactec.Domain
             {
                 this.auditRepository.Add(new LoginAudit { AuditTime = DateTime.Now, User = existingUser, MeetsAgeCriteria = userOver18 });
                 existingUser.Locked = this.CheckAndLockUser(existingUser);
-                return existingUser;
+
+                return this.mapper.Map<UserQueryResult>(existingUser);
             }
             else
             {
@@ -50,12 +67,17 @@ namespace Reactec.Domain
                 var newUser = new User { Name = name, Email = email, DateOfBirth = dateOfBirth, Locked = false };
                 this.userRepository.Add(newUser);
                 this.auditRepository.Add(new LoginAudit { AuditTime = DateTime.Now, User = newUser, MeetsAgeCriteria = userOver18 });
-                return newUser;
+                return this.mapper.Map<UserQueryResult>(newUser);
             }
         }
 
         private bool CheckAndLockUser(User user)
         {
+            if (user.Locked)
+            {
+                return true;
+            }
+
             var failedLogins = this.userRepository.Get(user.UserId).LoginAudits.Where(x => x.AuditTime >= DateTime.Now.AddHours(-1) && !x.MeetsAgeCriteria);
             if (failedLogins.Any() && failedLogins.Count() >= 3)
             {

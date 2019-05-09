@@ -59,7 +59,18 @@ namespace Reactec.Web.Controllers
                 return this.View("Index", webUser);
             }
 
-            return this.RedirectToAction("AuditHistory");
+            return this.RedirectToAction("AuditHistory", new { id = user.UserId });
+        }
+
+        /// <summary>
+        /// Get Index.
+        /// </summary>
+        /// <param name="userId">The user id.</param>
+        /// <returns>IActionResult.</returns>
+        [HttpGet]
+        public IActionResult AuditHistory(int userId)
+        {
+            return this.View("Index");
         }
     }
 }
