@@ -9,6 +9,7 @@ namespace Reactec.Domain
     using System.Linq;
     using AutoMapper;
     using Reactec.Domain.DataStore.Models;
+    using Reactec.Domain.Enums;
     using Reactec.Domain.QueryResults;
     using Reactec.Domain.Repository;
 
@@ -34,14 +35,38 @@ namespace Reactec.Domain
             this.mapper = mapper;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public IEnumerable<LoginAuditQueryResult> AuditHistory(int userId)
+        /// <inheritdoc/>
+        public IEnumerable<LoginAuditQueryResult> AuditHistory(string searchParam, SortMethod sortMethod)
         {
-            throw new NotImplementedException();
+            // this should be stored elsewhere, or implement full strategy pattern
+            var strategyMap = new Dictionary<SortMethod, Func<IEnumerable<LoginAudit>, IEnumerable<LoginAudit>>>
+            {
+                { SortMethod.DateOfBirthAscending, x => x.OrderBy(y => y.User.DateOfBirth) },
+                { SortMethod.DateOfBirthDescending, x => x.OrderByDescending(y => y.User.DateOfBirth) },
+                { SortMethod.EmailAscending, x => x.OrderBy(y => y.User.Email) },
+                { SortMethod.EmailDescending, x => x.OrderByDescending(y => y.User.Email) },
+                { SortMethod.NameAscending, x => x.OrderBy(y => y.User.Name) },
+                { SortMethod.NameDescending, x => x.OrderByDescending(y => y.User.Name) },
+                { SortMethod.LoginTimeAscending, x => x.OrderBy(y => y.AuditTime) },
+                { SortMethod.LoginTimeDescending, x => x.OrderByDescending(y => y.AuditTime) },
+            };
+
+            var auditHistory = this.auditRepository.GetAll();
+
+            if (searchParam != string.Empty)
+            {
+                auditHistory = auditHistory.Where(x => x.User.Name.Contains(searchParam) || x.User.Name.Contains(searchParam));
+            }
+
+            auditHistory = strategyMap[sortMethod](auditHistory);
+
+            return this.mapper.Map<IEnumerable<LoginAuditQueryResult>>(auditHistory);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<LoginAuditQueryResult> AuditHistory()
+        {
+            return this.AuditHistory(string.Empty, SortMethod.LoginTimeDescending);
         }
 
         /// <inheritdoc/>

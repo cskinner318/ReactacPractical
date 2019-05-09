@@ -1,4 +1,4 @@
-﻿// <copyright file="User.cs" company="Reactec Practical">
+﻿// <copyright file="UserQueryResult.cs" company="Reactec Practical">
 // Copyright (c) Reactec Practical. All rights reserved.
 // </copyright>
 

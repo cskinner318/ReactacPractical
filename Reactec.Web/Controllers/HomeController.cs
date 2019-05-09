@@ -63,14 +63,26 @@ namespace Reactec.Web.Controllers
         }
 
         /// <summary>
-        /// Get Index.
+        /// Get Audit History.
         /// </summary>
-        /// <param name="userId">The user id.</param>
         /// <returns>IActionResult.</returns>
         [HttpGet]
-        public IActionResult AuditHistory(int userId)
+        public IActionResult AuditHistory()
         {
-            return this.View("Index");
+            var history = this.userService.AuditHistory();
+            return this.View("AuditHistory");
+        }
+
+        /// <summary>
+        /// Audit History Search.
+        /// </summary>
+        /// <param name="auditHistory">The audit history view model.</param>
+        /// <returns>IActionResult.</returns>
+        [HttpPost]
+        public IActionResult AuditHistory(AuditHistory auditHistory)
+        {
+            var history = this.userService.AuditHistory(auditHistory.SearchTerm, auditHistory.SortMethod);
+            return this.View("AuditHistory");
         }
     }
 }

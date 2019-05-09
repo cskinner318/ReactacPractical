@@ -7,6 +7,7 @@ namespace Reactec.Domain
     using System;
     using System.Collections.Generic;
     using Reactec.Domain.DataStore.Models;
+    using Reactec.Domain.Enums;
     using Reactec.Domain.QueryResults;
 
     /// <summary>
@@ -24,10 +25,17 @@ namespace Reactec.Domain
         UserQueryResult RegisterLogin(string name, string email, DateTime dateOfBirth);
 
         /// <summary>
-        /// Gets the login audit history for a given user.
+        /// Gets the full login audit history.
         /// </summary>
-        /// <param name="userId">The user id.</param>
         /// <returns>An IEnumerable of AuditHistory.</returns>
-        IEnumerable<LoginAuditQueryResult> AuditHistory(int userId);
+        IEnumerable<LoginAuditQueryResult> AuditHistory();
+
+        /// <summary>
+        /// Gets the login audit history with search and filter parameters.
+        /// </summary>
+        /// <param name="searchParam">Any search parameters.</param>
+        /// <param name="sortMethod">The sort method.</param>
+        /// <returns>An IEnumerable of AuditHistory.</returns>
+        IEnumerable<LoginAuditQueryResult> AuditHistory(string searchParam, SortMethod sortMethod);
     }
 }
