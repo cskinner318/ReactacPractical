@@ -29,19 +29,49 @@ namespace Reactec.Domain
         }
 
         /// <inheritdoc/>
+        public bool CheckUserIsLocked(string name, string email)
+        {
+            var existingUser = this.userRepository.GetAll().Where(x => x.Name == name && x.Email == email).FirstOrDefault();
+
+            if (existingUser == null)
+            {
+                return false;
+            }
+
+            return existingUser.Locked;
+        }
+
+        /// <inheritdoc/>
         public void RegisterLogin(string name, string email, DateTime dateOfBirth)
         {
+            // the 18 years should be in config really
+            bool userOver18 = dateOfBirth <= DateTime.Now.AddYears(-18);
+
             // Check that the user exists
             var existingUser = this.userRepository.GetAll().Where(x => x.Name == name && x.Email == email).FirstOrDefault();
+
+            // if so just record the audit
             if (existingUser != null)
             {
-                this.auditRepository.Add(new LoginAudit { AuditTime = DateTime.Now, User = existingUser });
+                this.auditRepository.Add(new LoginAudit { AuditTime = DateTime.Now, User = existingUser, MeetsAgeCriteria = userOver18 });
+                this.CheckAndLockUser(existingUser);
             }
             else
             {
+                // otherwise create a new user
                 var newUser = new User { Name = name, Email = email, DateOfBirth = dateOfBirth, Locked = false };
                 this.userRepository.Add(newUser);
-                this.auditRepository.Add(new LoginAudit { AuditTime = DateTime.Now, User = newUser });
+                this.auditRepository.Add(new LoginAudit { AuditTime = DateTime.Now, User = newUser, MeetsAgeCriteria = userOver18 });
+            }
+        }
+
+        private void CheckAndLockUser(User user)
+        {
+            var failedLogins = this.userRepository.Get(user.UserId).LoginAudits.Where(x => x.AuditTime >= DateTime.Now.AddHours(-1) && !x.MeetsAgeCriteria);
+            if (failedLogins.Any() && failedLogins.Count() >= 3)
+            {
+                user.Locked = true;
+                this.userRepository.Update(this.userRepository.Get(user.UserId), user);
             }
         }
     }

@@ -35,7 +35,7 @@ namespace Reactec.Web.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return this.View();
+            return this.View("Index");
         }
 
         /// <summary>
@@ -48,8 +48,14 @@ namespace Reactec.Web.Controllers
         {
             this.userService.RegisterLogin(webUser.Name, webUser.EmailAddress, webUser.DateOfBirth);
 
+            if (this.userService.CheckUserIsLocked(webUser.Name, webUser.EmailAddress))
+            {
+                webUser.Locked = true;
+                return this.View("Index", webUser);
+            }
+
             if (!this.ModelState.IsValid)
-            { // re-render the view when validation failed.
+            {
                 return this.View("Index", webUser);
             }
 

@@ -29,5 +29,10 @@ namespace Reactec.Domain.DataStore.Models
         /// Gets or sets the login audit time.
         /// </summary>
         public DateTime AuditTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the user met the age criteria at the point of logon.
+        /// </summary>
+        public bool MeetsAgeCriteria { get; set; }
     }
 }
