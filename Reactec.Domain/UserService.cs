@@ -55,7 +55,7 @@ namespace Reactec.Domain
 
             if (searchParam != string.Empty)
             {
-                auditHistory = auditHistory.Where(x => x.User.Name.Contains(searchParam) || x.User.Name.Contains(searchParam));
+                auditHistory = auditHistory.Where(x => x.User.Name.Contains(searchParam));
             }
 
             auditHistory = strategyMap[sortMethod](auditHistory);
@@ -78,17 +78,19 @@ namespace Reactec.Domain
             // Check that the user exists
             var existingUser = this.userRepository.GetAll().Where(x => x.Name == name && x.Email == email).FirstOrDefault();
 
-            // if so just record the audit
+            // if so just record the login and update entity
             if (existingUser != null)
             {
                 this.auditRepository.Add(new LoginAudit { AuditTime = DateTime.Now, User = existingUser, MeetsAgeCriteria = userOver18 });
+                existingUser.DateOfBirth = dateOfBirth;
                 existingUser.Locked = this.CheckAndLockUser(existingUser);
+                this.userRepository.Update(this.userRepository.Get(existingUser.UserId), existingUser);
 
                 return this.mapper.Map<UserQueryResult>(existingUser);
             }
             else
             {
-                // otherwise create a new user
+                // otherwise create a new user and record login
                 var newUser = new User { Name = name, Email = email, DateOfBirth = dateOfBirth, Locked = false };
                 this.userRepository.Add(newUser);
                 this.auditRepository.Add(new LoginAudit { AuditTime = DateTime.Now, User = newUser, MeetsAgeCriteria = userOver18 });
@@ -106,8 +108,6 @@ namespace Reactec.Domain
             var failedLogins = this.userRepository.Get(user.UserId).LoginAudits.Where(x => x.AuditTime >= DateTime.Now.AddHours(-1) && !x.MeetsAgeCriteria);
             if (failedLogins.Any() && failedLogins.Count() >= 3)
             {
-                user.Locked = true;
-                this.userRepository.Update(this.userRepository.Get(user.UserId), user);
                 return true;
             }
 

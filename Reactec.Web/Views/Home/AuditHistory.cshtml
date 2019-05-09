@@ -1,0 +1,66 @@
+﻿@model Reactec.Web.Models.AuditHistory
+@{
+    Layout = null;
+}
+
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Audit History</title>
+</head>
+<body>
+    @using (Html.BeginForm("AuditHistory", "Home", FormMethod.Post))
+    {
+        <div asp-validation-summary="ModelOnly"></div>
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <th colspan="2" align="center">
+                    <h2>Audit History</h2>
+                </th>
+            </tr>
+            <tr>
+                <td></td>
+                <td>@Html.TextBoxFor(m => m.SearchTerm)</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Submit" /></td>
+            </tr>
+        </table>
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <th colspan="2" align="center">
+                    Login Time
+                </th>
+                <th colspan="2" align="center">
+                    Over 18
+                </th>
+                <th colspan="2" align="center">
+                    Name
+                </th>
+                <th colspan="2" align="center">
+                    Email
+                </th>
+                <th colspan="2" align="center">
+                    Date Of Birth
+                </th>
+            </tr>
+            @foreach (var entry in Model.LoginAudits)
+            {
+                <tr>
+                    <td>@entry.AuditTime</td>
+                    <td>@entry.MeetsAgeCriteria</td>
+                    <td>@entry.User.Name</td>
+                    <td>@entry.User.Email</td>
+                    <td>@entry.User.DateOfBirth.ToShortDateString()</td>
+                </tr>
+            }
+        </table>
+    }
+</body>
+</html>

@@ -59,7 +59,7 @@ namespace Reactec.Web.Controllers
                 return this.View("Index", webUser);
             }
 
-            return this.RedirectToAction("AuditHistory", new { id = user.UserId });
+            return this.RedirectToAction("AuditHistory");
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Reactec.Web.Controllers
         public IActionResult AuditHistory()
         {
             var history = this.userService.AuditHistory();
-            return this.View("AuditHistory");
+            return this.View("AuditHistory", new AuditHistory { LoginAudits = history });
         }
 
         /// <summary>
@@ -82,7 +82,8 @@ namespace Reactec.Web.Controllers
         public IActionResult AuditHistory(AuditHistory auditHistory)
         {
             var history = this.userService.AuditHistory(auditHistory.SearchTerm, auditHistory.SortMethod);
-            return this.View("AuditHistory");
+            auditHistory.LoginAudits = history;
+            return this.View("AuditHistory", auditHistory);
         }
     }
 }

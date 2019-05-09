@@ -6,6 +6,7 @@ namespace Reactec.Domain.Repository
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.EntityFrameworkCore;
     using Reactec.Domain.DataStore;
     using Reactec.Domain.DataStore.Models;
 
@@ -41,7 +42,7 @@ namespace Reactec.Domain.Repository
         /// <inheritdoc/>
         public IEnumerable<LoginAudit> GetAll()
         {
-            return this.userContext.LoginAuditEntries.AsEnumerable();
+            return this.userContext.LoginAuditEntries.Include(x => x.User).AsEnumerable();
         }
 
         /// <inheritdoc/>
