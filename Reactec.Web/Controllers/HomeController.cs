@@ -46,9 +46,9 @@ namespace Reactec.Web.Controllers
         [HttpPost]
         public IActionResult Index(WebUser webUser)
         {
-            this.userService.RegisterLogin(webUser.Name, webUser.EmailAddress, webUser.DateOfBirth);
+            var user = this.userService.RegisterLogin(webUser.Name, webUser.EmailAddress, webUser.DateOfBirth);
 
-            if (this.userService.CheckUserIsLocked(webUser.Name, webUser.EmailAddress))
+            if (user.Locked)
             {
                 webUser.Locked = true;
                 return this.View("Index", webUser);

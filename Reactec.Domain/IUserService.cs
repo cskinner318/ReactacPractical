@@ -4,7 +4,9 @@
 
 namespace Reactec.Domain
 {
+    using Reactec.Domain.DataStore.Models;
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Interface for carrying out user requests.
@@ -17,14 +19,9 @@ namespace Reactec.Domain
         /// <param name="name">The user's name.</param>
         /// <param name="email">The user's email address.</param>
         /// <param name="dateOfBirth">The user's date of birth.</param>
-        void RegisterLogin(string name, string email, DateTime dateOfBirth);
+        /// <returns>Returns the user id</returns>
+        User RegisterLogin(string name, string email, DateTime dateOfBirth);
 
-        /// <summary>
-        /// Check if a user is locked.
-        /// </summary>
-        /// <param name="name">The user's name.</param>
-        /// <param name="email">The user's email address.</param>
-        /// <returns>A bool indiciating if the user is locked.</returns>
-        bool CheckUserIsLocked(string name, string email);
+        IEnumerable<LoginAudit>
     }
 }
